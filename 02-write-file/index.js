@@ -9,14 +9,15 @@ const readline = require('node:readline').createInterface({
   output: process.stdout,
 });
 
-readline.question(`Enter any text: `, text => {
-  writer.write(text)
-  process.on("exit", () => {
-    console.log("Bye!");
-    readline.close();
-  })
-});
+process.stdout.write("Hello!, Please, enter any text:\n");
 
 readline.on("line", (text) => {
-  writer.write(text)
-})
+  text === "exit" ? closeApp() : writer.write(`${text}\n`);
+});
+
+process.on("exit", closeApp);
+
+function closeApp() {
+  process.stdout.write("Thanks for using, goodbye!");
+  process.exit();
+}
