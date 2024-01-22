@@ -15,9 +15,9 @@ readline.on("line", (text) => {
   text === "exit" ? closeApp() : writer.write(`${text}\n`);
 });
 
-process.on("exit", closeApp);
+readline.on("SIGINT", closeApp);
 
 function closeApp() {
-  process.stdout.write("Thanks for using, goodbye!");
-  process.exit();
+  process.stdout.write("\nThanks for using, goodbye!");
+  readline.close();
 }
