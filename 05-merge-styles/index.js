@@ -1,12 +1,18 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const srcPath = `${__dirname}/styles/`;
-const distPath = `${__dirname}/project-dist`;
+const distPath = `${__dirname}/project-dist/bundle.css`;
 
-mergeStyles(srcPath, distPath);
+if (require.main === module) {
+  init();
+}
+
+function init() {
+  mergeStyles(srcPath, distPath);
+}
 
 function mergeStyles(src, dist) {
-  const writter = fs.createWriteStream(`${dist}/bundle.css`);
+  const writter = fs.createWriteStream(dist);
 
   fs.readdir(src, { withFileTypes: true }, (err, files) => {
     if (err) throw err;
@@ -20,3 +26,5 @@ function mergeStyles(src, dist) {
     })
   })
 }
+
+module.exports = { mergeStyles };
