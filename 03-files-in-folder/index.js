@@ -9,7 +9,8 @@ fs.readdir(folderPath, { withFileTypes: true }, (err, files) => {
       fs.stat(`${folderPath}${file.name}`, (err, stats) => {
         if (err) throw err;
         let fileExtname = path.extname(file.name).replace(".", "");
-        console.log(`${file.name} - ${fileExtname} - ${stats.size}bytes`);
+        let fileName = path.basename(file.name, path.extname(file.name));
+        console.log(`${fileName} - ${fileExtname} - ${stats.size}bytes`);
       })
     }
   })
