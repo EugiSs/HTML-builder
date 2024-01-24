@@ -17,31 +17,17 @@ fs.rm(dist, { recursive: true, force: true }, (err) => {
   });
 });
 
-function replaceHtmlTemplates() {
-  let template;
+const replaceHtmlTemplates = async () => {
+  let templateData = await fs.promises.readFile(path.join(__dirname, "template.html"))
+  let template = templateData.toString();
+  const files = await fs.promises.readdir(componentsFolder, { withFileTypes: true });
+  for (let file of files) {
+    if (path.extname(file.name) === ".html") {
+      let componentData = await fs.promises.readFile(path.join(componentsFolder, file.name))
+      const component = componentData.toString();
+      template = template.replace(`{{${path.basename(file.name, ".html")}}}`, component);
 
-  fs.readFile(path.join(__dirname, "template.html"), (err, data) => {
-    if (err) throw err;
-    template = data.toString();
-
-    fs.readdir(componentsFolder, { withFileTypes: true }, (err, files) => {
-      if (err) throw err;
-      files.forEach(file => {
-        if (path.extname(file.name) === ".html") {
-          fs.readFile(path.join(componentsFolder, file.name), (err, data) => {
-            if (err) throw err;
-            const component = data.toString();
-            template = template.replace(`{{${path.basename(file.name, ".html")}}}`, component);
-
-            fs.writeFile(path.join(dist, "index.html"), template, (err) => {
-              if (err) throw err;
-            });
-
-          })
-        }
-      });
-    });
-
-  });
-
+    }
+  }
+  await fs.promises.writeFile(path.join(dist, "index.html"), template);
 }
